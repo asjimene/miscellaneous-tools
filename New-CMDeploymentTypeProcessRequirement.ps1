@@ -1,5 +1,5 @@
 Function New-CMDeploymentTypeProcessRequirement {
-    # Creates a Deployment Type Process Requirement by copying an existing Process Requirement.
+    # Creates a Deployment Type Process Requirement "Install Behavior tab in Deployment types" by copying an existing Process Requirement.
     # A Process requirement needs to be Defined in the "Install Behavior" Tab of the "SourceApplicationName" Variable before this script will function properly
 	Param (
 		[System.String]$SourceApplicationName,
