@@ -1,4 +1,4 @@
-$Site = "ASU:"
+$Site = "[SCCMSITE]:"
 $LogFile = "C:\Temp\UpdateImagingFiles.log"
 
 if ((Get-Item $LogFile -ErrorAction SilentlyContinue).Length -gt 500000) {
