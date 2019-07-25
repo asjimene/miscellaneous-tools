@@ -42,5 +42,5 @@ function Out-Notepad
 $Apps = (Get-ChildItem HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\) | Get-ItemProperty | select DisplayName, DisplayVersion, Version, UninstallString, QuietUninstallString, Publisher, URLInfoAbout, InstallLocation, InstallSource, PSPath
 $Apps += (Get-ChildItem HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\) | Get-ItemProperty | select DisplayName, DisplayVersion, Version, UninstallString, QuietUninstallString, Publisher, URLInfoAbout, InstallLocation, InstallSource, PSPath
 $Clipboard = $Apps | Sort-Object DisplayName | Out-Gridview -Title "Select Application" -OutputMode Single | select -First 1
-($Clipboard | Out-String).TrimStart().TrimEnd() | Set-Clipboard
-($Clipboard | Out-String).TrimStart().TrimEnd()| Out-Notepad
+($Clipboard | Out-String -Width 1000).TrimStart().TrimEnd() | Set-Clipboard
+($Clipboard | Out-String -Width 1000).TrimStart().TrimEnd()| Out-Notepad
