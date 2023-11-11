@@ -19,14 +19,18 @@ if ($AppFound) {
 }
 '@
 
-$Apps = (Get-ChildItem HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\) | Get-ItemProperty | Select-Object DisplayName, DisplayVersion, Version, WindowsInstaller, SystemComponent, UninstallString, QuietUninstallString, Publisher, URLInfoAbout, InstallLocation, InstallSource, PSPath
-$Apps += (Get-ChildItem HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\) | Get-ItemProperty | Select-Object DisplayName, DisplayVersion, SystemComponent, WindowsInstaller, Version, UninstallString, QuietUninstallString, Publisher, URLInfoAbout, InstallLocation, InstallSource, PSPath
+$Apps = ((Get-ChildItem HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\) | Get-ItemProperty | Select-Object DisplayName, DisplayVersion, Version, WindowsInstaller, SystemComponent, UninstallString, QuietUninstallString, Publisher, URLInfoAbout, InstallLocation, InstallSource, PSPath) | Where-object {-not([System.String]::IsNullOrEmpty($_.DisplayName))}
+$Apps += (Get-ChildItem HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\) | Get-ItemProperty | Select-Object DisplayName, DisplayVersion, SystemComponent, WindowsInstaller, Version, UninstallString, QuietUninstallString, Publisher, URLInfoAbout, InstallLocation, InstallSource, PSPath | Where-object { -not([System.String]::IsNullOrEmpty($_.DisplayName)) }
 $SelectedApp = $Apps | Sort-Object DisplayName | Out-GridView -Title "Select Application" -OutputMode Single | Select-Object -First 1
 $WindowsInstaller = if ([bool]$SelectedApp.WindowsInstaller){1}else{0}
 $SystemComponent = if([bool]$SelectedApp.SystemComponent){1}else{0}
 $SelectedApp.DisplayName -match '(?:(\d+)\.)?(?:(\d+)\.)?(?:(\d+)\.\d+)'
-$version = $Matches[0]
-$DisplayNameNew = ($SelectedApp.DisplayName).Replace($version, '*')
-$DisplayNameNew
+if ($Matches){
+	$version = $Matches[0]
+	$DisplayNameNew = ($SelectedApp.DisplayName).Replace($version, '*')
+} else {
+	$DisplayNameNew = $SelectedApp.DisplayName
+}
+
 $DetectionScript = $DetectionScript.Replace("@AppName", $DisplayNameNew).Replace("@AppVersion", $SelectedApp.DisplayVersion).Replace("@WindowsInstaller", $WindowsInstaller).Replace("@SystemComponent", $SystemComponent)
-$DetectionScript | Out-File -FilePath "$PSScriptRoot\$($SelectedApp.DisplayName).ps1" -Encoding oem -Force
+$DetectionScript | Out-File -FilePath "$PSScriptRoot\$($DisplayNameNew.Replace('*','').Replace('  ',' ')).ps1" -Encoding oem -Force
