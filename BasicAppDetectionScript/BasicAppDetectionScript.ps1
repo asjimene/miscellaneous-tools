@@ -14,5 +14,5 @@ $AppFound = $Apps | Where-Object {
 
 # Post some output if the app is found
 if ($AppFound) {
-	Write-Output "Installed"
+	Write-Output "Installed $AppName"
 }
