@@ -72,7 +72,7 @@ $AppFound = $Apps | Where-Object {
 	($_.DisplayName -like $AppName) -and ([version]$_.DisplayVersion -ge [version]$AppVersion) -and ([bool]$_.WindowsInstaller -eq [bool]$WindowsInstaller) -and ([bool]$_.SystemComponent -eq [bool]$SystemComponent)
 }
 
-if ($null -ne $binaryToCheck){
+if (-not [System.String]::IsNullOrEmpty($binaryToCheck)){
 	$binaryCheckResult = Get-PeMachineType -Path $binaryToCheck
 	if (-not ($AppFound -and $binaryCheckResult -eq $binaryToCheckResult)) {
 		$AppFound = $null
